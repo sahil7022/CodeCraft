@@ -11,7 +11,8 @@
     "start": "node server/index.js",
     "db:seed": "node server/db/seed.js",
     "prisma:generate": "prisma generate --schema=server/db/prisma/schema.prisma",
-    "prisma:push": "prisma db push --schema=server/db/prisma/schema.prisma"
+    "prisma:push": "prisma db push --schema=server/db/prisma/schema.prisma",
+    "autocommit": "git add . && git commit -m \"Auto commit & sync: DSA Bina Bakchodi Ke\" && git push origin main"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
