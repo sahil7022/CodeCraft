@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DSA Bina Bakchodi Ke - Auth</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e8",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline-variant": "#4d4354",
+                        "on-primary-fixed-variant": "#6900b3",
+                        "surface-container": "#1e2024",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-primary-fixed": "#2c0051",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-container": "#0566d9",
+                        "primary-fixed": "#f0dbff",
+                        "surface-container-highest": "#333539",
+                        "surface-tint": "#ddb7ff",
+                        "surface-dim": "#111318",
+                        "tertiary-fixed": "#acedff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "error": "#ffb4ab",
+                        "outline": "#988d9f",
+                        "tertiary-container": "#009eb9",
+                        "on-tertiary": "#003640",
+                        "inverse-primary": "#842bd2",
+                        "on-primary-container": "#400071",
+                        "background": "#111318",
+                        "surface-bright": "#37393e",
+                        "primary": "#ddb7ff",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary": "#490080",
+                        "primary-fixed-dim": "#ddb7ff",
+                        "secondary": "#adc6ff",
+                        "inverse-on-surface": "#2f3035",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary-container": "#e6ecff",
+                        "on-secondary": "#002e6a",
+                        "primary-container": "#b76dff",
+                        "surface": "#111318",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-container-low": "#1a1c20",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-surface": "#e2e2e8",
+                        "on-surface-variant": "#cfc2d6",
+                        "surface-variant": "#333539",
+                        "surface-container-high": "#282a2e",
+                        "inverse-surface": "#e2e2e8",
+                        "tertiary": "#4cd7f6",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "display-xl": ["Outfit"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Outfit"],
+                        "headline-md": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "code-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&amp;family=Outfit:wght@600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0A0C10; /* Enforced deep navy background */
+            color: #e2e2e8;
+            overflow-x: hidden;
+        }
+        
+        /* Glassmorphism Auth Card */
+        .glass-card {
+            background: rgba(30, 32, 36, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Neon Input Focus */
+        .neon-input:focus {
+            outline: none;
+            border-color: #4cd7f6; /* Cyan */
+            box-shadow: 0 0 15px rgba(76, 215, 246, 0.3);
+        }
+
+        /* Animated Tab Underline */
+        .tab-indicator {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Playful Mascot Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Experience Card Hover */
+        .exp-card:hover {
+            border-color: #ddb7ff; /* Primary */
+            box-shadow: 0 0 15px rgba(221, 183, 255, 0.2);
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+        
+        .exp-card.selected {
+             border-color: #4cd7f6; /* Cyan */
+             background: rgba(76, 215, 246, 0.1);
+             box-shadow: 0 0 15px rgba(76, 215, 246, 0.3);
+        }
+
+        /* Page transition hide */
+        .hidden-flow {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .show-flow {
+            display: flex;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex text-on-background font-body-md">
+<!-- Split Layout: Left Side Shader Background -->
+<div class="hidden lg:block lg:w-1/2 relative bg-surface-container-lowest">
+<!-- Shader Placeholder injected dynamically -->
+
+<!-- Overlay Brand Text -->
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/80 to-transparent flex flex-col justify-end p-margin-desktop">
+<h1 class="text-display-xl font-display-xl text-primary tracking-tighter mb-4 shadow-black drop-shadow-2xl">
+                DSA Bina<br/>Bakchodi Ke
+            </h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-md">
+                Skip the theory, compile the reality. Welcome back to the grid.
+            </p>
+</div>
+</div>
+<!-- Split Layout: Right Side Auth Form -->
+<div class="w-full lg:w-1/2 flex items-center justify-center p-6 relative overflow-hidden bg-background">
+<!-- Ambient Glow behind form -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-container/20 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="w-full max-w-md relative z-10">
+<!-- Mascot Greeting -->
+<div class="absolute -top-16 right-0 animate-float flex flex-col items-end">
+<div class="bg-surface-bright text-on-surface text-label-caps font-label-caps px-4 py-2 rounded-full rounded-br-none shadow-lg mb-2 border border-white/10 relative">
+                    Swagat hai, bhidu! 😎
+                    <!-- Chat bubble tail -->
+<div class="absolute -bottom-2 right-4 w-4 h-4 bg-surface-bright border-b border-r border-white/10 transform rotate-45"></div>
+</div>
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center border border-primary/50 text-2xl">
+                    🧠
+                </div>
+</div>
+<!-- Glassmorphic Auth Container -->
+<div class="glass-card rounded-2xl p-8 flex flex-col">
+<!-- Mobile Logo (Hidden on desktop) -->
+<h2 class="lg:hidden text-headline-md font-headline-md text-primary font-extrabold tracking-tighter mb-8 text-center">
+                    DSA Bina Bakchodi Ke
+                </h2>
+<!-- Auth Tabs (Login / Register) -->
+<div class="flex relative mb-8 border-b border-surface-variant">
+<button class="flex-1 pb-4 text-headline-sm font-headline-md text-primary transition-colors focus:outline-none" id="tab-login" onclick="switchTab('login')">
+                        Login
+                    </button>
+<button class="flex-1 pb-4 text-headline-sm font-headline-md text-on-surface-variant hover:text-primary transition-colors focus:outline-none" id="tab-register" onclick="switchTab('register')">
+                        Create Account
+                    </button>
+<!-- Active Indicator Line -->
+<div class="absolute bottom-0 left-0 w-1/2 h-[2px] bg-primary tab-indicator" id="tab-indicator"></div>
+</div>
+<!-- FLOW: LOGIN -->
+<div class="flex flex-col gap-6 show-flow" id="flow-login">
+<!-- Standard Email/Password -->
+<div class="flex flex-col gap-4">
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">Terminal ID (Email)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">terminal</span>
+<input class="w-full bg-surface-container-low border border-surface-variant rounded-lg py-3 pl-10 pr-4 text-on-surface focus:outline-none neon-input transition-all placeholder:text-outline-variant font-code-sm" placeholder="hacker@grid.com" type="email"/>
+</div>
+</div>
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2 flex justify-between">
+                                Access Key (Password)
+                                <a class="text-primary hover:text-primary-container transition-colors" href="#">Forgot?</a>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">key</span>
+<input class="w-full bg-surface-container-low border border-surface-variant rounded-lg py-3 pl-10 pr-4 text-on-surface focus:outline-none neon-input transition-all placeholder:text-outline-variant font-code-sm" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+<!-- Primary Login Action -->
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-body-md hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(221,183,255,0.2)]">
+                        Initialize Session
+                    </button>
+<!-- Divider -->
+<div class="relative flex items-center justify-center my-2">
+<div class="absolute w-full border-t border-surface-variant"></div>
+<span class="bg-surface-container px-4 text-label-caps font-label-caps text-outline z-10">OR EXECUTE VIA</span>
+</div>
+<!-- Social Logins -->
+<div class="flex gap-4">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 border border-surface-variant rounded-lg hover:border-primary/50 hover:bg-white/5 transition-colors text-body-md">
+<svg class="w-5 h-5 text-on-surface" fill="currentColor" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                            Google
+                        </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 border border-surface-variant rounded-lg hover:border-primary/50 hover:bg-white/5 transition-colors text-body-md">
+<svg class="w-5 h-5 text-on-surface" fill="currentColor" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.379.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" fill-rule="evenodd"></path>
+</svg>
+                            GitHub
+                        </button>
+</div>
+</div>
+<!-- FLOW: REGISTER (Initially Hidden) -->
+<div class="flex-col gap-6 hidden-flow" id="flow-register">
+<!-- Step 1: Basic Info -->
+<div class="flex flex-col gap-4" id="register-step-1">
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">New Terminal ID (Email)</label>
+<input class="w-full bg-surface-container-low border border-surface-variant rounded-lg py-3 px-4 text-on-surface focus:outline-none neon-input transition-all font-code-sm" placeholder="new.hacker@grid.com" type="email"/>
+</div>
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">Secure Key (Password)</label>
+<input class="w-full bg-surface-container-low border border-surface-variant rounded-lg py-3 px-4 text-on-surface focus:outline-none neon-input transition-all font-code-sm" placeholder="Create a strong password" type="password"/>
+</div>
+<button class="mt-2 w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-body-md hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(221,183,255,0.2)]" onclick="nextRegisterStep()" type="button">
+                            Continue to Config
+                            <span class="material-symbols-outlined align-middle ml-1 text-[18px]">arrow_forward</span>
+</button>
+</div>
+<!-- Step 2: Onboarding (DSA Experience) -->
+<div class="hidden-flow flex-col gap-4" id="register-step-2">
+<h3 class="text-body-lg font-headline-md text-primary mb-2">DSA ka experience kitna hai?</h3>
+<div class="grid grid-cols-2 gap-4">
+<!-- Option 1 -->
+<div class="exp-card border border-surface-variant rounded-xl p-4 cursor-pointer text-center bg-surface-container-low" onclick="selectExp(this)">
+<div class="text-3xl mb-2">👶</div>
+<div class="text-body-md font-bold text-on-surface">Noob</div>
+<div class="text-label-caps text-on-surface-variant mt-1">Array bhi mushkil hai</div>
+</div>
+<!-- Option 2 -->
+<div class="exp-card border border-surface-variant rounded-xl p-4 cursor-pointer text-center bg-surface-container-low" onclick="selectExp(this)">
+<div class="text-3xl mb-2">🤓</div>
+<div class="text-body-md font-bold text-on-surface">Mid</div>
+<div class="text-label-caps text-on-surface-variant mt-1">HashMaps tak okay</div>
+</div>
+<!-- Option 3 -->
+<div class="exp-card border border-surface-variant rounded-xl p-4 cursor-pointer text-center bg-surface-container-low" onclick="selectExp(this)">
+<div class="text-3xl mb-2">😎</div>
+<div class="text-body-md font-bold text-on-surface">Pro</div>
+<div class="text-label-caps text-on-surface-variant mt-1">DP se darr nahi lagta</div>
+</div>
+<!-- Option 4 -->
+<div class="exp-card border border-surface-variant rounded-xl p-4 cursor-pointer text-center bg-surface-container-low" onclick="selectExp(this)">
+<div class="text-3xl mb-2">👽</div>
+<div class="text-body-md font-bold text-on-surface">God Level</div>
+<div class="text-label-caps text-on-surface-variant mt-1">Segment Trees in sleep</div>
+</div>
+</div>
+<div class="flex gap-2 mt-4">
+<button class="w-1/3 bg-transparent border border-surface-variant text-on-surface py-3 rounded-lg font-headline-md text-body-md hover:bg-white/5 transition-colors" onclick="prevRegisterStep()" type="button">
+                                Back
+                            </button>
+<button class="w-2/3 bg-primary text-on-primary py-3 rounded-lg font-headline-md text-body-md hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(221,183,255,0.2)]" type="button">
+                                Create Account
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Links -->
+<div class="mt-6 text-center text-label-caps text-on-surface-variant">
+                By compiling, you agree to our <a class="text-tertiary hover:underline" href="#">Terms of Service</a> and <a class="text-tertiary hover:underline" href="#">Privacy Policy</a>.
+            </div>
+</div>
+</div>
+<script>
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            const indicator = document.getElementById('tab-indicator');
+            const loginBtn = document.getElementById('tab-login');
+            const registerBtn = document.getElementById('tab-register');
+            const flowLogin = document.getElementById('flow-login');
+            const flowRegister = document.getElementById('flow-register');
+            
+            // Reset Register Flow if switching back
+            if(tabName === 'login') {
+                document.getElementById('register-step-1').classList.replace('hidden-flow', 'flex');
+                document.getElementById('register-step-2').classList.replace('flex', 'hidden-flow');
+            }
+
+            if (tabName === 'login') {
+                indicator.style.transform = 'translateX(0)';
+                
+                loginBtn.classList.replace('text-on-surface-variant', 'text-primary');
+                registerBtn.classList.replace('text-primary', 'text-on-surface-variant');
+                
+                flowLogin.classList.replace('hidden-flow', 'show-flow');
+                flowRegister.classList.replace('show-flow', 'hidden-flow');
+            } else {
+                indicator.style.transform = 'translateX(100%)';
+                
+                registerBtn.classList.replace('text-on-surface-variant', 'text-primary');
+                loginBtn.classList.replace('text-primary', 'text-on-surface-variant');
+                
+                flowRegister.classList.replace('hidden-flow', 'show-flow');
+                flowLogin.classList.replace('show-flow', 'hidden-flow');
+            }
+        }
+
+        // Register Multi-step logic
+        function nextRegisterStep() {
+            document.getElementById('register-step-1').classList.replace('flex', 'hidden-flow');
+            document.getElementById('register-step-2').classList.replace('hidden-flow', 'flex');
+        }
+
+        function prevRegisterStep() {
+            document.getElementById('register-step-2').classList.replace('flex', 'hidden-flow');
+            document.getElementById('register-step-1').classList.replace('hidden-flow', 'flex');
+        }
+
+        // Experience Card Selection Logic
+        function selectExp(selectedElement) {
+            // Remove 'selected' class from all cards
+            const cards = document.querySelectorAll('.exp-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            
+            // Add 'selected' class to clicked card
+            selectedElement.classList.add('selected');
+        }
+    </script>
+</body></html>

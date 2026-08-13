@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stack Visualizer - DSA Bina Bakchodi Ke</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#b76dff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary-fixed": "#001a42",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#333539",
+                        "primary-fixed": "#f0dbff",
+                        "surface-tint": "#ddb7ff",
+                        "surface-variant": "#333539",
+                        "on-secondary": "#002e6a",
+                        "on-primary-fixed": "#2c0051",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-container-low": "#1a1c20",
+                        "secondary": "#adc6ff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container": "#1e2024",
+                        "surface-dim": "#111318",
+                        "secondary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#2f3035",
+                        "on-tertiary": "#003640",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-primary": "#490080",
+                        "primary": "#ddb7ff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-surface-variant": "#cfc2d6",
+                        "tertiary-container": "#009eb9",
+                        "on-surface": "#e2e2e8",
+                        "inverse-primary": "#842bd2",
+                        "on-secondary-container": "#e6ecff",
+                        "surface-bright": "#37393e",
+                        "background": "#111318",
+                        "on-tertiary-container": "#002f38",
+                        "primary-fixed-dim": "#ddb7ff",
+                        "outline": "#988d9f",
+                        "surface-container-lowest": "#0c0e12",
+                        "on-primary-fixed-variant": "#6900b3",
+                        "surface-container-high": "#282a2e",
+                        "tertiary-fixed": "#acedff",
+                        "tertiary": "#4cd7f6",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#0566d9",
+                        "outline-variant": "#4d4354",
+                        "on-error": "#690005",
+                        "on-primary-container": "#400071",
+                        "surface": "#111318",
+                        "on-background": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "margin-desktop": "40px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-xl": ["Outfit"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "headline-md": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "headline-lg": ["Outfit"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "code-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Outfit:wght@400;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; }
+        
+        @keyframes slideInDown {
+            from { transform: translateY(-150%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOutUp {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-150%); opacity: 0; }
+        }
+        
+        .stack-item-enter {
+            animation: slideInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .stack-item-exit {
+            animation: slideOutUp 0.3s ease-in forwards;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(221, 183, 255, 0.4);
+        }
+        
+        .glass-panel {
+            background: rgba(30, 32, 36, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen relative overflow-x-hidden flex flex-col">
+<!-- Background Shader -->
+<div class="fixed inset-0 z-[-1] pointer-events-none opacity-40">
+<!-- STITCH_SHADER_START:ANIMATION_5 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_5" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_5');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+varying vec2 v_texCoord;
+
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    
+    // Cyber-Logic Dark Theme Colors
+    vec3 bg = vec3(0.067, 0.075, 0.094); // #111318
+    vec3 accent = vec3(0.659, 0.333, 0.969); // #a855f7
+    
+    // Subtle animated grid/data nodes
+    vec2 grid = uv * 20.0;
+    vec2 id = floor(grid);
+    float n = hash(id);
+    
+    float pulse = sin(u_time * 2.0 + n * 6.28) * 0.5 + 0.5;
+    float shape = smoothstep(0.1, 0.0, length(fract(grid) - 0.5));
+    
+    vec3 color = mix(bg, accent, shape * pulse * 0.15);
+    
+    // Add a slight gradient glow from the bottom
+    color += accent * (1.0 - uv.y) * 0.05;
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_5 -->
+</div>
+<!-- TopNavBar -->
+<nav class="bg-surface-container/80 backdrop-blur-xl docked full-width top-0 sticky z-50 border-b border-white/10 shadow-[0_0_15px_rgba(221,183,255,0.1)]">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto md:px-margin-mobile">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="text-headline-md font-headline-md font-extrabold text-primary tracking-tighter">DSA Bina Bakchodi Ke</span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-white/5 transition-all duration-300 px-3 py-1 rounded-md text-label-caps font-label-caps" href="#">Learn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-white/5 transition-all duration-300 px-3 py-1 rounded-md text-label-caps font-label-caps" href="#">Roadmap</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 scale-95 duration-200 transition-transform px-3 py-1 text-label-caps font-label-caps" href="#">Visualizer</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-3 py-1 rounded-full text-label-caps font-label-caps">
+<span class="material-symbols-outlined text-[16px]" data-icon="local_fire_department">local_fire_department</span>
+                    XP/Streak
+                </button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col md:flex-row max-w-container-max mx-auto w-full p-gutter gap-gutter mt-8">
+<!-- Left Panel: Code Editor -->
+<aside class="w-full md:w-4/12 flex flex-col gap-unit">
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col h-full">
+<!-- Editor Header -->
+<div class="bg-surface-container-high px-4 py-2 flex items-center justify-between border-b border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="code">code</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">stack.cpp</span>
+</div>
+</div>
+<!-- Editor Body -->
+<div class="p-4 font-code-sm text-code-sm bg-[#0A0C10] flex-grow overflow-y-auto" id="code-editor">
+<pre class="text-on-surface-variant leading-relaxed"><span class="text-pink-400">#include</span> &lt;iostream&gt;
+<span class="text-pink-400">#include</span> &lt;vector&gt;
+
+<span class="text-pink-400">class</span> <span class="text-tertiary">Stack</span> {
+<span class="text-pink-400">private</span>:
+    <span class="text-tertiary">std::vector</span>&lt;<span class="text-primary-container">int</span>&gt; elements;
+    
+<span class="text-pink-400">public</span>:
+    <span class="text-on-surface-variant opacity-50">// PUSH OPERATION</span>
+    <span class="text-primary-container">void</span> <span class="text-secondary">push</span>(<span class="text-primary-container">int</span> val) {
+<div class="pl-4 border-l-2 border-transparent transition-colors duration-300" id="code-line-push">        elements.<span class="text-secondary">push_back</span>(val);
+        <span class="text-tertiary">std::cout</span> &lt;&lt; <span class="text-yellow-300">"Pushed "</span> &lt;&lt; val &lt;&lt; <span class="text-tertiary">std::endl</span>;</div>    }
+
+    <span class="text-on-surface-variant opacity-50">// POP OPERATION</span>
+    <span class="text-primary-container">void</span> <span class="text-secondary">pop</span>() {
+<div class="pl-4 border-l-2 border-transparent transition-colors duration-300" id="code-line-pop">        <span class="text-pink-400">if</span> (elements.<span class="text-secondary">empty</span>()) <span class="text-pink-400">return</span>;
+        elements.<span class="text-secondary">pop_back</span>();</div>    }
+    
+    <span class="text-on-surface-variant opacity-50">// PEEK OPERATION</span>
+    <span class="text-primary-container">int</span> <span class="text-secondary">peek</span>() {
+<div class="pl-4 border-l-2 border-transparent transition-colors duration-300" id="code-line-peek">        <span class="text-pink-400">if</span> (elements.<span class="text-secondary">empty</span>()) <span class="text-pink-400">return</span> -1;
+        <span class="text-pink-400">return</span> elements.<span class="text-secondary">back</span>();</div>    }
+};
+</pre>
+</div>
+</div>
+<!-- Complexity Box -->
+<div class="glass-panel rounded-xl p-4 mt-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="speed">speed</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">TIME COMPLEXITY</span>
+</div>
+<div class="flex justify-between items-center mb-2">
+<span class="font-code-sm text-code-sm">Push()</span>
+<span class="bg-primary/20 text-primary px-2 py-1 rounded font-code-sm text-code-sm">O(1)</span>
+</div>
+<div class="flex justify-between items-center mb-4">
+<span class="font-code-sm text-code-sm">Pop()</span>
+<span class="bg-primary/20 text-primary px-2 py-1 rounded font-code-sm text-code-sm">O(1)</span>
+</div>
+<div class="text-[14px] text-error bg-error-container/20 p-2 rounded-lg border border-error/20 flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] mt-0.5" data-icon="warning">warning</span>
+<span>Beech se nikalne ki koshish mat kar bhai 😭</span>
+</div>
+</div>
+</aside>
+<!-- Center Panel: Visualizer Canvas -->
+<section class="w-full md:w-8/12 flex flex-col items-center">
+<!-- Header/Humor -->
+<div class="text-center mb-8 w-full">
+<h1 class="text-headline-lg font-headline-lg text-primary mb-2">Stack Visualizer</h1>
+<div class="inline-block glass-panel px-4 py-2 rounded-full mb-2">
+<span class="text-body-lg font-body-lg font-bold">LIFO (Last In, First Out)</span>
+</div>
+<p class="text-on-surface-variant italic text-sm">"Bilkul mere ex ki tarah, sabse late aayi aur sabse pehle gayi 💀"</p>
+</div>
+<!-- Visualization Area -->
+<div class="flex-grow flex flex-col items-center justify-end w-full relative min-h-[400px]">
+<!-- Cyberpunk Shaft / Stack Container -->
+<div class="relative w-64 h-80 border-x-4 border-b-4 border-surface-container-high rounded-b-xl flex flex-col justify-end p-4 gap-2 bg-gradient-to-t from-surface-container-low to-transparent" id="stack-container">
+<!-- Top Opening Glow -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<!-- Pre-filled Initial State -->
+<div class="stack-item bg-surface-bright border border-white/10 rounded-lg p-4 flex items-center justify-center neon-glow w-full transition-all" data-val="99">
+<span class="font-code-sm text-headline-md font-bold text-white">[ 99 ]</span>
+</div>
+<div class="stack-item bg-surface-bright border border-white/10 rounded-lg p-4 flex items-center justify-center w-full transition-all" data-val="18">
+<span class="font-code-sm text-headline-md font-bold text-white">[ 18 ]</span>
+</div>
+<div class="stack-item bg-surface-bright border border-white/10 rounded-lg p-4 flex items-center justify-center w-full transition-all" data-val="42">
+<span class="font-code-sm text-headline-md font-bold text-white">[ 42 ]</span>
+</div>
+</div>
+</div>
+<!-- Controls -->
+<div class="glass-panel w-full max-w-md mt-8 p-4 rounded-xl flex justify-between items-center gap-4">
+<div class="flex items-center gap-2">
+<input class="w-20 bg-surface-container border border-white/10 rounded-lg p-2 font-code-sm text-white focus:ring-primary focus:border-primary" id="push-val" type="number" value="69"/>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-caps text-label-caps hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(221,183,255,0.2)]" id="btn-push">PUSH</button>
+</div>
+<div class="flex gap-2">
+<button class="border border-primary text-primary px-6 py-2 rounded-lg font-label-caps text-label-caps hover:bg-primary/10 transition-colors" id="btn-pop">POP</button>
+<button class="border border-tertiary text-tertiary px-6 py-2 rounded-lg font-label-caps text-label-caps hover:bg-tertiary/10 transition-colors" id="btn-peek">PEEK</button>
+</div>
+</div>
+<!-- Step Indicator -->
+<div class="mt-8 flex gap-2" id="step-indicator">
+<div class="w-2 h-2 rounded-full bg-primary neon-glow"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="bg-surface-dim/90 backdrop-blur-xl docked full-width bottom-0 fixed z-50 rounded-t-xl border-t border-white/10 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-label-caps font-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="text-label-caps font-label-caps mt-1">Learn</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl p-2 shadow-[0_0_10px_rgba(221,183,255,0.3)] scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="text-label-caps font-label-caps mt-1">Visualize</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+<span class="text-label-caps font-label-caps mt-1">Challenges</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-label-caps font-label-caps mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stackContainer = document.getElementById('stack-container');
+            const btnPush = document.getElementById('btn-push');
+            const btnPop = document.getElementById('btn-pop');
+            const btnPeek = document.getElementById('btn-peek');
+            const inputVal = document.getElementById('push-val');
+            
+            const codePush = document.getElementById('code-line-push');
+            const codePop = document.getElementById('code-line-pop');
+            const codePeek = document.getElementById('code-line-peek');
+
+            const MAX_ELEMENTS = 5;
+
+            function highlightCode(element) {
+                // Reset all
+                [codePush, codePop, codePeek].forEach(el => {
+                    el.classList.remove('bg-primary/20', 'border-primary');
+                    el.classList.add('border-transparent');
+                });
+                
+                // Highlight active
+                if(element) {
+                    element.classList.add('bg-primary/20', 'border-primary');
+                    element.classList.remove('border-transparent');
+                    setTimeout(() => {
+                        element.classList.remove('bg-primary/20', 'border-primary');
+                        element.classList.add('border-transparent');
+                    }, 1000);
+                }
+            }
+
+            function updateTopGlow() {
+                const items = stackContainer.querySelectorAll('.stack-item');
+                items.forEach(item => item.classList.remove('neon-glow'));
+                if (items.length > 0) {
+                    // First element in DOM is the top visually, but flex-col + justify-end places last element at bottom.
+                    // Actually, wait, appendChild puts it at the bottom. We need insertBefore to put it at top visually inside flex-col.
+                    items[0].classList.add('neon-glow');
+                }
+            }
+
+            btnPush.addEventListener('click', () => {
+                if(stackContainer.children.length - 1 >= MAX_ELEMENTS) {
+                    alert('Stack Overflow Bhai!');
+                    return;
+                }
+                
+                highlightCode(codePush);
+                
+                const val = inputVal.value || Math.floor(Math.random() * 100);
+                const newItem = document.createElement('div');
+                newItem.className = 'stack-item bg-surface-bright border border-white/10 rounded-lg p-4 flex items-center justify-center w-full transition-all stack-item-enter';
+                newItem.innerHTML = `<span class="font-code-sm text-headline-md font-bold text-white">[ ${val} ]</span>`;
+                
+                // Insert at the beginning so it appears at top visually
+                const topGlow = stackContainer.querySelector('.w-full.h-1'); // skip the glow element
+                stackContainer.insertBefore(newItem, stackContainer.children[1]);
+                
+                setTimeout(() => {
+                    newItem.classList.remove('stack-item-enter');
+                    updateTopGlow();
+                }, 400);
+            });
+
+            btnPop.addEventListener('click', () => {
+                const items = stackContainer.querySelectorAll('.stack-item');
+                if (items.length === 0) {
+                    alert('Stack Underflow Bhai!');
+                    return;
+                }
+                
+                highlightCode(codePop);
+                
+                const topItem = items[0]; // The top visual item
+                topItem.classList.add('stack-item-exit');
+                topItem.classList.remove('neon-glow');
+                
+                setTimeout(() => {
+                    if (topItem.parentNode) {
+                        topItem.parentNode.removeChild(topItem);
+                        updateTopGlow();
+                    }
+                }, 300);
+            });
+
+            btnPeek.addEventListener('click', () => {
+                const items = stackContainer.querySelectorAll('.stack-item');
+                if (items.length === 0) return;
+                
+                highlightCode(codePeek);
+                const topItem = items[0];
+                
+                // Pulse effect
+                topItem.style.transform = 'scale(1.05)';
+                topItem.style.boxShadow = '0 0 25px rgba(76, 215, 246, 0.6)';
+                
+                setTimeout(() => {
+                    topItem.style.transform = 'scale(1)';
+                    topItem.style.boxShadow = '';
+                }, 500);
+            });
+            
+            // initial setup
+            updateTopGlow();
+        });
+    </script>
+</body></html>

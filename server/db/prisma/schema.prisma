@@ -1,0 +1,153 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  passwordHash  String
+  role          String          @default("STUDENT")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  profile       StudentProfile?
+  progress      Progress[]
+  quizAttempts  QuizAttempt[]
+  challenges    ChallengeAttempt[]
+  achievements  UserAchievement[]
+}
+
+model StudentProfile {
+  id                       String   @id @default(uuid())
+  userId                   String   @unique
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  experienceLevel          String   @default("BEGINNER") // BEGINNER, INTERMEDIATE, PRO
+  xp                       Int      @default(0)
+  streak                   Int      @default(1)
+  lastActiveDate           DateTime @default(now())
+  totalLessonsCompleted    Int      @default(0)
+  totalChallengesCompleted Int      @default(0)
+}
+
+model Concept {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  category    String   // Searching, Sorting, Data Structures, Algorithms, Complexity
+  difficulty  String   // Easy, Medium, Hard
+  description String
+  orderIndex  Int      @default(0)
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id               String      @id @default(uuid())
+  conceptId        String
+  concept          Concept     @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  title            String
+  slug             String      @unique
+  explanation      String      @db.Text
+  realLifeExample  String      @db.Text
+  funnyComparison  String      @db.Text
+  technicalNote    String      @db.Text
+  visualizationType String     // bubble_sort, binary_search, stack, queue, linked_list, bst, graph_bfs, recursion, complexity
+  codeSnippet      String      @db.Text
+  estimatedMinutes Int         @default(10)
+  orderIndex       Int         @default(0)
+  progress         Progress[]
+  quizzes          Quiz[]
+  challenges       Challenge[]
+}
+
+model Algorithm {
+  id              String @id @default(uuid())
+  name            String
+  slug            String @unique
+  category        String
+  description     String
+  timeComplexity  String
+  spaceComplexity String
+}
+
+model Progress {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId           String
+  lesson             Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status             String   @default("NOT_STARTED") // NOT_STARTED, IN_PROGRESS, COMPLETED
+  progressPercentage Int      @default(0)
+  completedAt        DateTime?
+  updatedAt          DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model Quiz {
+  id            String        @id @default(uuid())
+  lessonId      String
+  lesson        Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  question      String
+  options       String[]      // JSON array of strings
+  correctAnswer Int
+  explanation   String
+  attempts      QuizAttempt[]
+}
+
+model QuizAttempt {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId         String
+  quiz           Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  selectedAnswer Int
+  isCorrect      Boolean
+  createdAt      DateTime @default(now())
+}
+
+model Challenge {
+  id          String             @id @default(uuid())
+  lessonId    String
+  lesson      Lesson             @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title       String
+  description String             @db.Text
+  difficulty  String
+  starterCode String             @db.Text
+  solution    String             @db.Text
+  attempts    ChallengeAttempt[]
+}
+
+model ChallengeAttempt {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  status      String    // SUBMITTED, PASSED, FAILED
+  score       Int       @default(0)
+  createdAt   DateTime  @default(now())
+}
+
+model Achievement {
+  id          String            @id @default(uuid())
+  name        String
+  description String
+  icon        String
+  requirement String
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+
+  @@id([userId, achievementId])
+}
